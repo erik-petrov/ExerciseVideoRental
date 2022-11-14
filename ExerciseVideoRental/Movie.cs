@@ -36,9 +36,6 @@ namespace ExerciseVideoRental
             else
                 price = basicPrice;
         }
-        public void ChangeMovieType(MovieType type)
-        {
-            Type = type;
-        }
+        public void ChangeMovieType(MovieType type) => Type = type;
     }
 }

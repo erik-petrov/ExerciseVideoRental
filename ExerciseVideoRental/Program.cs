@@ -8,4 +8,4 @@ RentalStore rs = new RentalStore(new Movie[]
     new Movie(3, "Out of Africa", MovieType.Old_Film),
 });
 Customer me = new Customer("Erik", "afhsudf");
-rs.Rent(me);
+rs.Start(me);
