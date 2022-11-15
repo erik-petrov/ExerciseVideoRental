@@ -41,18 +41,34 @@ namespace ExerciseVideoRental
             {
                 Console.WriteLine("What would you like to do: \nRent a movie(r)\nReturn movies(b)\nQuit(q): ");
                 string? answer = Console.ReadLine();
-                if (answer == "q") break;
-                else if(answer == "r") Rent(user);
-                else if(answer == "b") Return(user);
-                else if(answer == "") continue;
-                
+                switch (answer)
+                {
+                    case "q":
+                        stop = true;
+                        break;
+                    case "r":
+                        Rent(user);
+                        break;
+                    case "b":
+                        Return(user);
+                        break;
+                    default:
+                        continue;
+                }
             } while (!stop);
             Console.WriteLine("Have a nice day!");
         }
         public void Return(Customer user)
         {
-            if (user == null) return;
-            if (user.RentedMovies.Count == 0) { Console.WriteLine("You don't have any movies rented."); return; }
+            if (user == null)
+            {
+                return;
+            }
+            if (user.RentedMovies.Count == 0)
+            {
+                Console.WriteLine("You don't have any movies rented.");
+                return;
+            }
             bool stop = false;
             Dictionary<Movie, int> receiptList = new Dictionary<Movie, int>();
             Console.WriteLine("What movie would you like to return?\nAvailable movies: ");
@@ -65,10 +81,19 @@ namespace ExerciseVideoRental
                     Console.Write(pair.Key.Id+ 1 + ": ");
                     Console.WriteLine(pair.Key.Name);
                 }
-                if (user.RentedMovies.Count == 0) break;
+
+                if (user.RentedMovies.Count == 0)
+                {
+                    break;
+                }
+
                 Console.WriteLine("Please enter the movie ID that you would like to return\n(or q for quit and a for all): ");
                 string? answer = Console.ReadLine();
-                if (answer == "q") break;
+
+                if (answer == "q")
+                {
+                    break;
+                }
                 else if (answer == "a")
                 {
                     foreach (KeyValuePair<Movie, int> item in user.RentedMovies)
@@ -79,22 +104,36 @@ namespace ExerciseVideoRental
                 }
                 else if (int.TryParse(answer, out int id))
                 {
-                    if(id < 1)
+                    if (id < 1)
                     {
                         Console.WriteLine("Invalid Id!");
                         continue;
                     }
                     KeyValuePair<Movie, int> pair;
-                    try { pair = user.RentedMovies.First(pair => pair.Key.Id == id - 1); }
-                    catch (ArgumentNullException) { Console.WriteLine("Movie does not exist!"); continue; }
+                    try
+                    {
+                        pair = user.RentedMovies.First(pair => pair.Key.Id == id - 1);
+                    }
+                    catch (ArgumentNullException)
+                    {
+                        Console.WriteLine("Movie does not exist!");
+                        continue;
+                    }
                     receiptList.Add(pair.Key, promptDays(pair.Key, pair.Value));
                 }
             } while (!stop);
-            if (receiptList.Count == 0) return;
+            if (receiptList.Count == 0)
+            {
+                return;
+            }
             if (user.RentedMovies.Count == 0)
+            {
                 Console.WriteLine("You've run out of rented movies! Here's your receipt: ");
+            }
             else
+            {
                 Console.WriteLine("Great! Here's your receipt: ");
+            }
             printReturnReceipt(receiptList, user);
         }
         //will ask user how much days they've had the movie for and print a price
@@ -123,7 +162,10 @@ namespace ExerciseVideoRental
         }
         public void Rent(Customer user)
         {
-            if (user == null) return;
+            if (user == null)
+            {
+                return;
+            }
             if (AvailableMovies.Count == 0)
             {
                 Console.WriteLine("The store doesen't have any movies available at this moment! Please come again later!");
@@ -165,18 +207,26 @@ namespace ExerciseVideoRental
             } while (!stop);
             if(receiptList.Count == 0) return;
             if(AvailableMovies.Count == 0)
+            {
                 Console.WriteLine("Sorry! We've run out of movies. Here's your receipt: ");
+            }
             else
+            {
                 Console.WriteLine("Great! Here's your receipt: ");
+            }
             printBuyReceipt(receiptList, user);
         }
         //assigns bonus point depending on the movie type
         void handleRent(Movie movie, int days, Customer user)
         {
             if (movie.Type == MovieType.New_Release)
+            {
                 user.BonusPoints += 2;
+            }
             else
+            {
                 user.BonusPoints += 1;
+            }
             AvailableMovies.Remove(movie);
             RentedMovies.Add(movie, days);
         }
@@ -197,7 +247,10 @@ namespace ExerciseVideoRental
             float total = 0;
             foreach (KeyValuePair<Movie, int> movie in movies)
             {
-                if (movie.Value == 0) continue;
+                if (movie.Value == 0)
+                {
+                    continue;
+                }
                 float movieTotal = getLateCost(movie.Key, movie.Value);
                 Console.WriteLine($"{movie.Key.Name}({movie.Key.Type}) {movie.Value} extra days {movieTotal} EUR");
                 total += movieTotal;
