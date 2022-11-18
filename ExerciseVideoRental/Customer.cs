@@ -17,5 +17,28 @@ namespace ExerciseVideoRental
             Name = name;
             Address = address;
         }
+
+        public void DumpInfo()
+        {
+            Console.WriteLine(
+                $"Name: {Name}" +
+                $"Address: {Address}" +
+                $"Bonus points: {BonusPoints}" +
+                $"Rented movies: {getRentedMovies()}"
+            );
+        }
+        private string getRentedMovies()
+        {
+            if(RentedMovies.Count == 0)
+            {
+                return "";
+            }
+            string ret = "";
+            foreach (Movie item in RentedMovies.Keys)
+            {
+                ret += item.Name + "\n";
+            }
+            return ret;
+        }
     }
 }

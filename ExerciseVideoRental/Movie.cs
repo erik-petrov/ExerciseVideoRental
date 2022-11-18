@@ -13,8 +13,9 @@ namespace ExerciseVideoRental
         public int Id { get; }
         public string Name { get; set; }
         public MovieType Type { get; set; }
-        public float basicPrice = 3;
-        public float premiumPrice  = 4;
+        public const float basicPrice = 3;
+        public const float premiumPrice  = 4;
+        public bool paidWithBonus = false;
         public float price { get; set; }
         public Movie(int id, string name, MovieType type)
         {
