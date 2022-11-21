@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExerciseVideoRental", "ExerciseVideoRental\ExerciseVideoRental.csproj", "{505A2983-6F6A-4EFD-B8D6-B16345E553B9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExerciseVideoRental", "ExerciseVideoRental\ExerciseVideoRental.csproj", "{505A2983-6F6A-4EFD-B8D6-B16345E553B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoRentalUnitTest", "VideoRentalUnitTest\VideoRentalUnitTest.csproj", "{F4D45C75-53A5-434C-BA0B-48CD0C721772}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{505A2983-6F6A-4EFD-B8D6-B16345E553B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{505A2983-6F6A-4EFD-B8D6-B16345E553B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{505A2983-6F6A-4EFD-B8D6-B16345E553B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4D45C75-53A5-434C-BA0B-48CD0C721772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4D45C75-53A5-434C-BA0B-48CD0C721772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4D45C75-53A5-434C-BA0B-48CD0C721772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4D45C75-53A5-434C-BA0B-48CD0C721772}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

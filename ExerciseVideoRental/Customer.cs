@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,10 +22,10 @@ namespace ExerciseVideoRental
         public void DumpInfo()
         {
             Console.WriteLine(
-                $"Name: {Name}" +
-                $"Address: {Address}" +
-                $"Bonus points: {BonusPoints}" +
-                $"Rented movies: {getRentedMovies()}"
+                $"Name: {Name}\n" +
+                $"Address: {Address}\n" +
+                $"Bonus points: {BonusPoints}\n" +
+                $"Rented movies: {getRentedMovies()}\n "
             );
         }
         private string getRentedMovies()

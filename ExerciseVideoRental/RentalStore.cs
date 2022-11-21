@@ -1,10 +1,13 @@
-﻿using System.Formats.Asn1;
+﻿using System.Collections.Generic;
+using System.Data.SqlTypes;
+using System.Formats.Asn1;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks.Sources;
 using static ExerciseVideoRental.Inventory;
-
+[assembly: InternalsVisibleTo("VideoRentalUnitTest")]
 namespace ExerciseVideoRental
 {
     internal class RentalStore
@@ -212,6 +215,10 @@ namespace ExerciseVideoRental
                 Console.WriteLine("Please enter the movie ID(or q to quit; a for all): ");
                 int movieId;
                 string strMovieId = Console.ReadLine();
+                if(strMovieId == "q")
+                {
+                    break; 
+                }
                 while (!int.TryParse(strMovieId, out movieId) || strMovieId == "a")
                 {
                     strMovieId = Console.ReadLine();
@@ -229,6 +236,10 @@ namespace ExerciseVideoRental
                     }
                     break;
                 }
+
+                var ret = handleReturn(movieId, days, user);
+
+                receiptList.Add(ret.Key, ret.Value);
             }
             while (true);
 
@@ -238,30 +249,7 @@ namespace ExerciseVideoRental
             }
 
             Console.WriteLine("Great! Here's your receipt: ");
-            printBuyReceipt(receiptList, user);
-        }
-        public int promptDays(Movie movie, int days)
-        {
-            while(true)
-            {
-                Console.WriteLine("Returning: "+movie.Name);
-                Console.WriteLine("For how long did you have the movie for?(in days): ");
-                string? answer = Console.ReadLine();
-                if (int.TryParse(answer, out int actualDays))
-                {
-                    //if returned late
-                    if (days < actualDays)
-                    {
-                        Console.WriteLine("It looks like you've kept the film for too long!\nThe store will have to add additional fees on returning this movie!");
-                        return actualDays - days;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Great! It looks like you've returned the movie on time!");
-                        return 0;
-                    }
-                }
-            }
+            printReturnReceipt(receiptList, user);
         }
         public void Rent(Customer user)
         {
@@ -298,7 +286,15 @@ namespace ExerciseVideoRental
 
                 Console.WriteLine("Please enter the movie ID(or q to quit): ");
                 int movieId;
-                while (!int.TryParse(Console.ReadLine(), out movieId)) { }
+                string answer = Console.ReadLine();
+                if (answer == "q")
+                {
+                    break;
+                }
+                while (!int.TryParse(answer, out movieId))
+                {
+                    answer = Console.ReadLine();
+                }
 
                 Console.WriteLine($"Rent for how many days?: ");
                 int days;
@@ -347,8 +343,31 @@ namespace ExerciseVideoRental
             else
             {
                 Console.WriteLine("Great! Here's your receipt: ");
-                printBuyReceipt(receiptList, user);
             }
+            printBuyReceipt(receiptList, user);
+        }
+        //late = false, on time = true
+        KeyValuePair<Movie, int> handleReturn(int movieId, int days, Customer user)
+        {
+            if (movieId < 1)
+            {
+                throw new Exception("Invalid ID!");
+            }
+
+            KeyValuePair<Movie, int> pair = user.RentedMovies.First(pair => pair.Key.Id == movieId - 1);
+            int intendedDays = pair.Value;
+            int actualDays = 0;
+            Movie movie = pair.Key;
+
+            if(days > pair.Value)
+            {
+                actualDays = days - pair.Value;
+            }
+
+            user.RentedMovies.Remove(pair.Key);
+            AvailableMovies.Add(pair.Key);
+
+            return new KeyValuePair<Movie, int>(movie, actualDays);
         }
         //assigns bonus point depending on the movie type
         Movie handleRent(int movieId, int days, Customer user, bool bonus)
@@ -363,6 +382,7 @@ namespace ExerciseVideoRental
             if (bonus && movie.Type == MovieType.New_Release)
             {
                 movie.paidWithBonus = true;
+                user.BonusPoints -= 25;
                 AvailableMovies.Remove(movie);
                 RentedMovies.Add(movie, days);
                 return movie;
@@ -384,16 +404,31 @@ namespace ExerciseVideoRental
         void printBuyReceipt(Dictionary<Movie, int> movies, Customer user)
         {
             float total = 0;
-
+            bool bonus = false;
             foreach (KeyValuePair<Movie, int> movie in movies)
             {
                 float movieTotal = getCost(movie.Key, movie.Value);
+                
+                if (movie.Key.paidWithBonus)
+                {
+                    bonus = true;
+                    movieTotal = 0;
+                }
                 Console.WriteLine($"{movie.Key.Name}({movie.Key.Type}) {movie.Value} days {movieTotal} EUR");
 
                 total += movieTotal;
             }
 
             Console.WriteLine($"Total price: {total} EUR");
+            
+            if (bonus)
+            {
+                Console.WriteLine($"Remaining bonus points: {user.BonusPoints}");
+            }
+            else
+            {
+                Console.WriteLine($"Bonus points: {user.BonusPoints}");
+            }
 
             RentedMovies.ToList().ForEach(movie => user.RentedMovies.Add(movie.Key, movie.Value));
         }
@@ -411,11 +446,8 @@ namespace ExerciseVideoRental
                 Console.WriteLine($"{movie.Key.Name}({movie.Key.Type}) {movie.Value} extra days {movieTotal} EUR");
 
                 total += movieTotal;
-
-                user.RentedMovies.Remove(movie.Key);
-                AvailableMovies.Add(movie.Key);
             }
-            Console.WriteLine($"Total price: {total} EUR");
+            Console.WriteLine($"Total late charge: {total} EUR");
         }
         float getLateCost(Movie movie, int daysOver)
         {
