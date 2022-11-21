@@ -23,10 +23,12 @@ namespace VideoRentalUnitTest
         [Test]
         public void RentMovies()
         {
-            SetupUserResponses("r", "1", "1", "n", "2", "5", "3", "2", "4", "7", "q");
+            SetupUserResponses("r", "1", "1", "n", "2", "5", "3", "2", "4", "7", "q", "q");
             var expected = "Total price: 25 EUR";
 
             var output = RunAndGetOutput();
+
+            output.ToList().ForEach(x => TestContext.WriteLine(x));
 
             Assert.AreEqual(expected, output[^4]);
         }
@@ -38,6 +40,7 @@ namespace VideoRentalUnitTest
             var expected = "Total price: 0 EUR";
 
             var output = RunAndGetOutput();
+            output.ToList().ForEach(x => TestContext.WriteLine(x));
 
             Assert.AreEqual(expected, output[^4]);
         }
@@ -45,10 +48,11 @@ namespace VideoRentalUnitTest
         [Test]
         public void ReturnMovies()
         {
-            SetupUserResponses("r", "1", "1", "n", "2", "5", "q", "b", "1", "3", "2", "6", "q");
+            SetupUserResponses("r", "1", "1", "n", "2", "5", "q", "b", "1", "3", "2", "6", "q", "q");
             var expected = "Total late charge: 11 EUR";
 
             var output = RunAndGetOutput();
+            output.ToList().ForEach(x => TestContext.WriteLine(x));
 
             Assert.AreEqual(expected, output[^3]);
         }
